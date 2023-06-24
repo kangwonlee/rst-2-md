@@ -79,12 +79,13 @@ def convert_file(rst_path: pathlib.Path) -> Tuple[subprocess.CompletedProcess]:
   return r0, r1
 
 
-def get_rst_ref_re() -> str:
-  return r'\.\.\s*(.+)\s*\:'
+@functools.lru_cache(maxsize=1)
+def get_rst_ref_re() -> re.Pattern:
+  return re.compile(r':ref:`(.+?)`')
 
 
-def collect_all_refs_in_rst_files(text:str) -> List[pathlib.Path]:
-  p = re.compile(get_rst_ref_re())
+def collect_all_refs_in_rst_text(text:str) -> List[pathlib.Path]:
+  p = get_rst_ref_re()
   return p.findall(text)
 
 
@@ -93,7 +94,7 @@ def find_rst_refs(proj_path:pathlib.Path) -> Dict[str, str]:
 
   for rst_path in gen_rst_paths(proj_path):
     result[rst_path.relative_to(proj_path)] = tuple(
-      collect_all_refs_in_rst_files(rst_path.read_text())
+      collect_all_refs_in_rst_text(rst_path.read_text())
     )
 
   return result
