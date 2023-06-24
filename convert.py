@@ -5,9 +5,9 @@ Usage:
   python convert.py <path>
 
 """
-
 import functools
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -77,6 +77,15 @@ def convert_file(rst_path: pathlib.Path) -> Tuple[subprocess.CompletedProcess]:
   )
 
   return r0, r1
+
+
+def get_rst_ref_re() -> str:
+  return r'\.\.\s*(.+)\s*\:'
+
+
+def collect_all_refs_in_rst_files(text:str) -> List[pathlib.Path]:
+  p = re.compile(get_rst_ref_re())
+  return p.findall(text)
 
 
 if "__main__" == __name__:
