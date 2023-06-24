@@ -52,7 +52,9 @@ def convert_file(rst_path: pathlib.Path) -> subprocess.CompletedProcess:
 
   pandoc -s -o <output> <input>
 
-  ref : https://stackoverflow.com/questions/45633709/how-to-convert-rst-files-to-md
+  ref : 
+    https://pandoc.org/MANUAL.html
+    https://stackoverflow.com/questions/45633709/how-to-convert-rst-files-to-md
   '''
 
   assert rst_path.is_file(), rst_path
@@ -62,7 +64,7 @@ def convert_file(rst_path: pathlib.Path) -> subprocess.CompletedProcess:
   md_path = rst_path.with_suffix(".md")
   assert not md_path.exists(), md_path
 
-  cmd = ("pandoc", "--from", "rst", "-to", "markdown", "-o", str(md_path), str(rst_path))
+  cmd = ("pandoc", "--from=rst", "--to=markdown", "--output="+str(md_path), str(rst_path))
   return subprocess.run(cmd)
 
 
