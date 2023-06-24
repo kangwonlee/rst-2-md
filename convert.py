@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 
-from typing import List, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 
 def main(argv: List[str]):
@@ -86,6 +86,17 @@ def get_rst_ref_re() -> str:
 def collect_all_refs_in_rst_files(text:str) -> List[pathlib.Path]:
   p = re.compile(get_rst_ref_re())
   return p.findall(text)
+
+
+def find_rst_refs(proj_path:pathlib.Path) -> Dict[str, str]:
+  result = {}
+
+  for rst_path in gen_rst_paths(proj_path):
+    result[rst_path.relative_to(proj_path)] = tuple(
+      collect_all_refs_in_rst_files(rst_path.read_text())
+    )
+
+  return result
 
 
 if "__main__" == __name__:
