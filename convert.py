@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 
-from typing import List, Set
+from typing import List, Set, Tuple
 
 
 def main(argv: List[str]):
@@ -43,10 +43,10 @@ def is_ignore(path: pathlib.Path) -> bool:
 def convert_dir(path: pathlib.Path):
   for rst_path in path.glob("**/*.rst"):
     if not is_ignore(rst_path):
-      convert_file(rst_path)
+      convert_file(rst_path.absolute())
 
 
-def convert_file(rst_path: pathlib.Path) -> subprocess.CompletedProcess:
+def convert_file(rst_path: pathlib.Path) -> Tuple[subprocess.CompletedProcess]:
   '''
   Convert a markdown file to html file.
 
@@ -62,10 +62,16 @@ def convert_file(rst_path: pathlib.Path) -> subprocess.CompletedProcess:
   assert not set(rst_path.parts).intersection(get_ignore_set()), rst_path
 
   md_path = rst_path.with_suffix(".md")
-  assert not md_path.exists(), md_path
 
   cmd = ("pandoc", "--from=rst", "--to=markdown", "--output="+str(md_path), str(rst_path))
-  return subprocess.run(cmd)
+  r0 = subprocess.run(cmd)
+
+  r1 = subprocess.run(
+    ('git', 'add', md_path.name),
+    cwd=rst_path.parent,
+  )
+
+  return r0, r1
 
 
 if "__main__" == __name__:
