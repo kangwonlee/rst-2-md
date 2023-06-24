@@ -33,7 +33,7 @@ def main(argv: List[str]):
 
 @functools.lru_cache(maxsize=1)
 def get_ignore_set() -> Set[str]:
-  return set(('.git', '.github', '.gitlab', '.gitlab-ci.d',))
+  return set(('.git', '.github', '.gitlab',))
 
 
 def is_ignore(path: pathlib.Path) -> bool:
