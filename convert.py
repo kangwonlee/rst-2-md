@@ -60,6 +60,8 @@ def convert_file(rst_path: pathlib.Path) -> subprocess.CompletedProcess:
   assert not set(rst_path.parts).intersection(get_ignore_set()), rst_path
 
   md_path = rst_path.with_suffix(".md")
+  assert not md_path.exists(), md_path
+
   cmd = ("pandoc", "--from", "rst", "-to", "markdown", "-o", str(md_path), str(rst_path))
   return subprocess.run(cmd)
 
