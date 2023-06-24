@@ -41,9 +41,14 @@ def is_ignore(path: pathlib.Path) -> bool:
 
 
 def convert_dir(path: pathlib.Path):
+  for rst_path in gen_rst_paths(path):
+      convert_file(rst_path.absolute())
+
+
+def gen_rst_paths(path: pathlib.Path) -> pathlib.Path:
   for rst_path in path.glob("**/*.rst"):
     if not is_ignore(rst_path):
-      convert_file(rst_path.absolute())
+      yield rst_path.absolute()
 
 
 def convert_file(rst_path: pathlib.Path) -> Tuple[subprocess.CompletedProcess]:
